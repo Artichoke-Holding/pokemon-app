@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myinfogame/user_page.dart';
+import 'package:myinfogame/views/user_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

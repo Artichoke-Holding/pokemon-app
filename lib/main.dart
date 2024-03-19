@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myinfogame/home_page.dart';
-import 'package:myinfogame/user_page.dart';
+import 'package:myinfogame/views/home_page.dart';
 
 void main() {
   runApp(const MyInfoGameApp());
