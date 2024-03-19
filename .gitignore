@@ -41,3 +41,37 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Flutter/Dart specific
+**/.flutter-plugins-dependencies
+**/.generated_plugin_registrant.dart
+
+# iOS specific
+**/ios/.generated/
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/engine/Flutter.podspec
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/ephemeral/
+**/ios/Podfile.lock
+**/ios/Pods/
+**/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
+**/ios/Runner.xcodeproj/project.xcworkspace/xcuserdata/
+**/ios/Runner.xcodeproj/xcuserdata/
+
+# Android specific
+**/android/.gradle
+**/android/.idea
+**/android/app/release/
+**/android/build/
+**/android/key.properties
+**/android/local.properties
+**/android/gradle/wrapper/gradle-wrapper.properties
+
+# General
+*.lock
+**/.DS_Store
+**/Thumbs.db
