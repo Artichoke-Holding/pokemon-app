@@ -52,4 +52,5 @@ class PokemonViewModel extends ChangeNotifier {
     pokemons.sort((a, b) => a.baseExperience!.compareTo(b.baseExperience!));
     notifyListeners();
   }
+
 }

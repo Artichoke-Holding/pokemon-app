@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pokemon/utils/string_utils.dart'; // Assuming this exists for capitalize function
 import '../models/pokemon.dart';
+import '../models/species_information.dart';
 import '../providers/providers.dart';
 import '../widgets/build_keleton_screen.dart';
 import '../widgets/pokemon_detail_section.dart';
@@ -25,19 +26,43 @@ class _PokemonDetailsPageState extends ConsumerState<PokemonDetailsPage> {
   @override
   Widget build(BuildContext context) {
     final pokemonFuture = ref.watch(pokemonByIdProvider(widget.pokemonId));
+    final pokemonService = ref.read(pokemonServiceProvider);
 
     return Scaffold(
-      body: pokemonFuture.when(
-        data: (pokemon) => buildPokemonDetails(context, pokemon),
-        loading: () => buildSkeletonScreen(context),
-        error: (error, _) => Text('Error: $error'),
+      body: Container(
+        color: Colors.white,
+        child: pokemonFuture.when(
+          data: (pokemon) => buildPokemonDetails(context, pokemon),
+          loading: () => buildSkeletonScreen(context),
+          error: (error, _) => Text('Error: $error'),
+        ),
       ),
       bottomNavigationBar: BottomAppBar(
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: () async {
+            try {
+              final speciesInfo = await pokemonService
+                  .fetchSpeciesInformation(widget.pokemonId);
+              showSpeciesInformationDialog(context, speciesInfo);
+            } catch (e) {
+              // Proper error handling
+              await showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text('Error'),
+                  content: Text('Failed to fetch species information: $e'),
+                  actions: [
+                    TextButton(
+                      child: Text('OK'),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
+                ),
+              );
+            }
+          },
           style: ElevatedButton.styleFrom(
             elevation: 0,
-            // Remove elevation if you want a flat design
             foregroundColor: Colors.white,
             backgroundColor: Colors.blueAccent,
             shape: RoundedRectangleBorder(
@@ -48,6 +73,65 @@ class _PokemonDetailsPageState extends ConsumerState<PokemonDetailsPage> {
           ),
           child: Text('View Species Information'),
         ),
+      ),
+    );
+  }
+  void showSpeciesInformationDialog(
+      BuildContext context, SpeciesInformation species) {
+    Color backgroundColor = colorMap[species.color.toLowerCase()] ?? Colors.grey;
+
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        backgroundColor: backgroundColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        elevation: 24,
+        title: Align(
+          alignment: Alignment.center,
+          child: Text(
+            species.name.toUpperCase(),
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
+            ),
+          ),
+        ),
+        content: Padding(
+          padding: EdgeInsets.symmetric(vertical: 10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Shape: ${species.shape.toUpperCase()}',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                'Color: ${species.color.toUpperCase()}',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ],
+          ),
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Close', style: TextStyle(fontSize: 16)),
+            style: ElevatedButton.styleFrom(
+              foregroundColor: backgroundColor, backgroundColor: Colors.white.withOpacity(0.9), // Text color
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -63,9 +147,11 @@ class _PokemonDetailsPageState extends ConsumerState<PokemonDetailsPage> {
         children: [
           AppBar(
             title: Text(capitalize(pokemon.name ?? '')),
-            automaticallyImplyLeading: true, // Enable the back button
+            automaticallyImplyLeading: true,
+            // Enable the back button
             elevation: 0,
             surfaceTintColor: Colors.white,
+            backgroundColor: Colors.white,
           ),
           //
           if (pokemon.spriteUrls.isNotEmpty)
@@ -142,4 +228,33 @@ class _PokemonDetailsPageState extends ConsumerState<PokemonDetailsPage> {
       ),
     );
   }
+
+  Map<String, Color> colorMap = {
+    'red': Colors.red,
+    'blue': Colors.blue,
+    'green': Colors.green,
+    'yellow': Colors.yellow,
+    'orange': Colors.orange,
+    'purple': Colors.purple,
+    'pink': Colors.pink,
+    'brown': Colors.brown,
+    'grey': Colors.grey,
+    'black': Colors.black,
+    'white': Colors.white,
+    'cyan': Colors.cyan,
+    'magenta': Colors.pinkAccent,
+    'lime': Colors.lime,
+    'indigo': Colors.indigo,
+    'violet': Colors.deepPurple,
+    'navy': Color(0xFF000080),
+    'teal': Colors.teal,
+    'coral': Colors.deepOrange,
+    'maroon': Color(0xFF800000),
+    'gold': Colors.amber,
+    'silver': Color(0xFFC0C0C0),
+    'olive': Color(0xFF808000),
+    'beige': Color(0xFFF5F5DC),
+    'mint': Color(0xFF98FF98),
+    'N/A': Colors.grey,
+  };
 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/pokemon.dart';
 import '../core/consts.dart';
+import '../models/species_information.dart';
 
 
 class PokemonService {
@@ -49,5 +50,17 @@ class PokemonService {
       throw Exception('Failed to load Pokémon details for ID: $id');
     }
   }
+
+  Future<SpeciesInformation> fetchSpeciesInformation(int pokemonId) async {
+    final response = await http.get(Uri.parse(AppAPIs.pokemonSpecies + '$pokemonId'));
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      return SpeciesInformation.fromJson(data);
+    } else {
+      throw Exception('Failed to load species information');
+    }
+  }
+
+
 }
 
