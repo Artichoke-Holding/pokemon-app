@@ -22,7 +22,7 @@ class PokemonListView extends ConsumerWidget {
         itemBuilder: (context, index) {
           if (index >= viewModel.pokemons.length) {
             if (viewModel.hasMore && !isLoading) {
-              viewModel.fetchPokemons(); // Load more pokemons
+              viewModel.fetchPokemons();
               return Center(child: CircularProgressIndicator());
             } else {
               return Container(); // No more items

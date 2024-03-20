@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../core/consts.dart';
 
 import '../models/pokemon.dart';
 import '../services/pokemon_service.dart';
@@ -11,7 +10,7 @@ class PokemonViewModel extends ChangeNotifier {
   final int _limit = 25;
   bool _hasMore = true;
   String? errorMessage;
-
+  String currentSorting = 'None';
   bool get hasMore => _hasMore;
 
   PokemonViewModel() {
@@ -22,6 +21,13 @@ class PokemonViewModel extends ChangeNotifier {
     try {
       List<Pokemon> newPokemons = await _pokemonService.fetchPokemons(_page, _limit);
       pokemons.addAll(newPokemons);
+
+
+      if (currentSorting == 'Name') {
+        sortByName();
+      } else if (currentSorting == 'BaseExperience') {
+        sortByBaseExperience();
+      }
 
       if (newPokemons.length < _limit) {
         _hasMore = false;
@@ -34,6 +40,16 @@ class PokemonViewModel extends ChangeNotifier {
     _page++;
     notifyListeners();
   }
+
+  void sortByName() {
+    currentSorting = 'Name';
+    pokemons.sort((a, b) => a.name!.compareTo(b.name!));
+    notifyListeners();
+  }
+
+  void sortByBaseExperience() {
+    currentSorting = 'BaseExperience';
+    pokemons.sort((a, b) => a.baseExperience!.compareTo(b.baseExperience!));
+    notifyListeners();
+  }
 }
-
-

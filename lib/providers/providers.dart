@@ -13,6 +13,6 @@ final pokemonServiceProvider = Provider<PokemonService>((ref) {
 });
 
 final audioServiceProvider = Provider<AudioService>((ref) {
-  return createAudioService(); // Use the factory method here
+  return createAudioService();
 });
 
