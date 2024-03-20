@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/pokemon.dart';
 import '../core/consts.dart';
-import '../models/pokemon_details.dart';
 
 
 class PokemonService {
@@ -38,14 +37,16 @@ class PokemonService {
     }
   }
 
-  Future<PokemonDetail> fetchPokemonDetail(String url) async {
-    var response = await http.get(Uri.parse(url));
+
+  Future<Pokemon> fetchPokemonById(int id) async {
+    var url = Uri.parse(AppAPIs.pokemonList + id.toString());
+    var response = await http.get(url);
 
     if (response.statusCode == 200) {
-      var json = jsonDecode(response.body) as Map<String, dynamic>;
-      return PokemonDetail.fromJson(json);
+      var detailJson = jsonDecode(response.body) as Map<String, dynamic>;
+      return Pokemon.fromJson(detailJson);
     } else {
-      throw Exception('Failed to load Pokémon details');
+      throw Exception('Failed to load Pokémon details for ID: $id');
     }
   }
 }

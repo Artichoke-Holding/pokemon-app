@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../providers/providers.dart';
 import '../utils/string_utils.dart';
@@ -15,14 +16,27 @@ class PokemonListView extends ConsumerWidget {
         viewModel.hasMore &&
         viewModel.errorMessage == null;
 
+
     return Skeletonizer(
       enabled: isLoading,
       child: ListView.builder(
-        itemCount: viewModel.pokemons.length + (viewModel.hasMore ? 1 : 0),
+        itemCount: isLoading ? 6 : viewModel.pokemons.length + (viewModel.hasMore ? 1 : 0),
         itemBuilder: (context, index) {
-          if (index >= viewModel.pokemons.length) {
-            if (viewModel.hasMore && !isLoading) {
-              viewModel.fetchPokemons();
+          if (isLoading) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                child: ListTile(
+                  leading: Container(width: 50, height: 50, color: Colors.grey),
+                  title: Container(width: double.infinity, height: 10, color: Colors.grey),
+                  subtitle: Container(width: 100, height: 10, color: Colors.grey),
+                ),
+              ),
+            );
+          } else if (index >= viewModel.pokemons.length) {
+            if (viewModel.hasMore) {
+              viewModel.fetchPokemons(); // Load more pokemons
               return Center(child: CircularProgressIndicator());
             } else {
               return Container(); // No more items
@@ -36,6 +50,9 @@ class PokemonListView extends ConsumerWidget {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10)),
               child: ListTile(
+                onTap: () {
+                  context.go('/pokemon/${pokemon.id}');
+                },
                 leading:
                     Image.network(pokemon.imageUrl ?? '', fit: BoxFit.cover),
                 title: Row(
