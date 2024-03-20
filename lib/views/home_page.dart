@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:myinfogame/views/user_page.dart';
+
+
+import 'package:pokemon/views/user_page.dart';
+
+import '../widgets/pokemon_list_view.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -8,9 +12,12 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Info Game'),
+        title: const Text('Pokemon'),
+        backgroundColor: Colors.grey[300],
+        surfaceTintColor: Colors.grey[300],
         actions: [
           PopupMenuButton(
+            icon: Icon(Icons.more_vert), // This changes the icon
             itemBuilder: (context) {
               return [
                 PopupMenuItem(
@@ -31,7 +38,7 @@ class HomePage extends StatelessWidget {
                   value: 'toggleButtons',
                   child: ToggleButtons(
                     isSelected: const [true, false],
-                    onPressed: print,
+                    onPressed: (_) {}, // Example placeholder function
                     children: const [
                       Text('En'),
                       Text('De'),
@@ -41,11 +48,12 @@ class HomePage extends StatelessWidget {
               ];
             },
           ),
+
         ],
       ),
-      body: const Center(
-        child: Text('Welcome to My Info Game\n Here is a list of Pokémon.'),
-      ),
+      body: Container(
+          color: Colors.grey[300],
+          child: PokemonListView()),
     );
   }
 }

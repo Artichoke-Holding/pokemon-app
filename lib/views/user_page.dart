@@ -2,9 +2,10 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:myinfogame/core/consts.dart';
-import 'package:myinfogame/core/json_file_parser.dart';
-import 'package:myinfogame/models/user.dart';
+
+import '../core/consts.dart';
+import '../core/json_file_parser.dart';
+import '../models/user.dart';
 
 class UserPage extends StatefulWidget {
   const UserPage({super.key});
