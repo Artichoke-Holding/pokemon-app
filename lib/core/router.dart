@@ -2,6 +2,8 @@ import 'package:go_router/go_router.dart';
 import 'package:pokemon/views/home_page.dart';
 import 'package:pokemon/views/pokemon_details_page.dart';
 
+import '../views/user_page.dart';
+
 class AppRouter {
   static final GoRouter router = GoRouter(
     routes: <RouteBase>[
@@ -18,6 +20,10 @@ class AppRouter {
               }
               return const HomePage();
             },
+          ),
+          GoRoute(
+            path: 'users', // New route for UserPage
+            builder: (context, state) => const UserPage(),
           ),
         ],
       ),

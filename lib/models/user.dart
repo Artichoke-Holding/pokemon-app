@@ -115,6 +115,8 @@ class User {
         'lastLogin: $lastLogin, '
         '}';
   }
+  String? get firstEmail => emails?.isNotEmpty == true ? emails!.first : null;
+
 }
 
 

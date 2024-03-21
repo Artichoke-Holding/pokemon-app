@@ -4,13 +4,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../providers/providers.dart';
+import '../services/audio/audio_service.dart';
 import '../utils/string_utils.dart';
 
 class PokemonListView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final viewModel = ref.watch(pokemonViewModelProvider);
-    final audioService = ref.read(audioServiceProvider);
 
     bool isLoading = viewModel.pokemons.isEmpty &&
         viewModel.hasMore &&
@@ -36,10 +36,10 @@ class PokemonListView extends ConsumerWidget {
             );
           } else if (index >= viewModel.pokemons.length) {
             if (viewModel.hasMore) {
-              viewModel.fetchPokemons(); // Load more pokemons
+              viewModel.fetchPokemons();
               return Center(child: CircularProgressIndicator());
             } else {
-              return Container(); // No more items
+              return Container();
             }
           }
 
@@ -89,14 +89,15 @@ class PokemonListView extends ConsumerWidget {
                     ),
                   ],
                 ),
-                trailing: IconButton(
+                trailing:IconButton(
                   icon: SvgPicture.asset(
                     'assets/images/icons/volume_up_simple_electrifying.svg',
                     height: 35,
                     color: Colors.blue,
                   ),
-                  onPressed: () => audioService.playCry(pokemon.cryUrl ?? ''),
+                  onPressed: () => ref.read(audioServiceProvider).playCry(pokemon.cryUrl ?? ''),
                 ),
+
               ),
             ),
           );

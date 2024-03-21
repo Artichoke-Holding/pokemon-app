@@ -1,148 +1,121 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
-
-import '../core/consts.dart';
-import '../core/json_file_parser.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../models/user.dart';
+import '../providers/providers.dart';
+import '../viewmodels/user_view_model.dart';
+import '../widgets/user_item.dart';
 
-class UserPage extends StatefulWidget {
-  const UserPage({super.key});
+class UserPage extends ConsumerStatefulWidget {
+  const UserPage({Key? key}) : super(key: key);
 
   @override
-  State<UserPage> createState() => _UserPageState();
+  ConsumerState<UserPage> createState() => _UserPageState();
 }
 
-class _UserPageState extends State<UserPage> {
-  late final Future<List<User>> future;
-
+class _UserPageState extends ConsumerState<UserPage> {
   @override
-  void initState() {
-    super.initState();
-    future = JsonFileParser<User>.of(context).parse(
-      path: AppConsts.dataPath,
-      listName: 'users',
-      parser: User.fromJson,
-    );
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final viewModel = ref.read(usersViewModelProvider);
+    if (viewModel.users.isEmpty) {
+      viewModel.fetchUsers();
+    }
   }
-
+  void _handleLoadMore() {
+    final viewModel = ref.read(usersViewModelProvider);
+    if (viewModel.hasMore && !viewModel.isLoading) {
+      viewModel.fetchUsers();
+    }
+  }
   @override
   Widget build(BuildContext context) {
+    final viewModel = ref.watch(usersViewModelProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Users'),
+        surfaceTintColor: Colors.white,
       ),
-      body: Center(
-        child: Column(
-          children: [
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'All people in the world:',
-                style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+      body: Skeletonizer(
+        enabled: viewModel.isLoading && viewModel.users.isEmpty,
+        child: _buildUserList(viewModel),
+      ),
+    );
+  }
+
+  Widget _buildUserList(UsersViewModel viewModel) {
+    final itemCount = viewModel.isLoading && viewModel.users.isEmpty
+        ? 6
+        : viewModel.hasMore
+        ? viewModel.users.length + 1
+        : viewModel.users.length;
+
+    return ListView.builder(
+      itemCount: itemCount,
+      itemBuilder: (context, index) {
+        if (viewModel.isLoading && viewModel.users.isEmpty) {
+          return _buildUserSkeletonItem(); // Show skeleton item
+        } else if (index >= viewModel.users.length) {
+          // Handle load more case
+          return viewModel.hasMore && viewModel.users.isNotEmpty
+              ? const Center(child: CircularProgressIndicator())
+              : const Center(child: Text("No more users"));
+        }
+
+        if (index == viewModel.users.length - 1 && viewModel.hasMore) {
+          _handleLoadMore();
+        }
+
+        return UserListItem(user: viewModel.users[index]);
+      },
+    );
+  }
+
+  Widget _buildUserSkeletonItem() {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      margin: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 7,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 100,
+            height: 100,
+            color: Colors.grey,
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children:  [
+                  Container(
+                      width: double.infinity,
+                      height: 10,
+                      color: Colors.grey
+                  ),
+                  SizedBox(height: 5),
+                  Container(
+                      width: double.infinity,
+                      height: 10,
+                      color: Colors.grey
+                  ),
+                ],
               ),
             ),
-            // ElevatedButton(
-            //   onPressed: () async {
-            //     log('Loading...', name: 'MyInfoGame');
-            //
-            //     final future = await JsonFileParser<User>.of(context).parse(
-            //       path: AppConsts.dataPath,
-            //       listName: 'users',
-            //       parser: User.fromJson,
-            //     );
-            //
-            //     log(future.length.toString(), name: 'MyInfoGame');
-            //   },
-            //   child: const Text('Load'),
-            // ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.7,
-              child: FutureBuilder(
-                future: future,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  }
-                  if (snapshot.hasData) {
-                    return ListView.builder(
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          padding: const EdgeInsets.all(8),
-                          margin: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              colorFilter: ColorFilter.mode(
-                                Colors.black.withOpacity(0.9),
-                                BlendMode.darken,
-                              ),
-                              image: NetworkImage(
-                                snapshot.data![index].avatar ?? 'NULL',
-                              ),
-                              fit: BoxFit.cover,
-                            ),
-                            border: Border.all(color: Colors.blue),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: ListTile(
-                            textColor: Colors.white,
-                            tileColor: Colors.black.withOpacity(0.5),
-                            onTap: () {
-                              log(
-                                snapshot.data![index].toString(),
-                                name: 'MyInfoGame',
-                              );
-                            },
-                            leading: CircleAvatar(
-                              backgroundImage: NetworkImage(
-                                snapshot.data![index].avatar ?? 'NULL',
-                              ),
-                            ),
-                            trailing: const Icon(
-                              Icons.arrow_forward_ios,
-                              color: Colors.white,
-                            ),
-                            title: Row(
-                              children: [
-                                Text(
-                                  snapshot.data![index].name!.first ?? 'NULL',
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  snapshot.data![index].name!.last ?? 'NULL',
-                                ),
-                                const Gap(8),
-                                // Gap(8),
-                                // Text(snapshot.data![index].status ?? 'NULL'),
-                              ],
-                            ),
-                            subtitle: Text(
-                              snapshot.data![index].job!.title ?? 'NULL',
-                              softWrap: true,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              style: const TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                    // return Text(snapshot.data!.length.toString());
-                  }
-                  return const Center(child: Text('No data'));
-                },
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 
 import 'package:pokemon/views/user_page.dart';
@@ -41,24 +42,16 @@ class HomePage extends StatelessWidget {
                 );
               }
           ),
+          IconButton(
+            icon: Icon(Icons.account_circle),
+            onPressed: () {
+              context.push('/users'); // Navigate to the UserPage
+            },
+          ),
           PopupMenuButton(
             icon: Icon(Icons.more_vert),
             itemBuilder: (context) {
               return [
-                PopupMenuItem(
-                  value: 'users',
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const UserPage(),
-                        ),
-                      );
-                    },
-                    child: const Text('Users'),
-                  ),
-                ),
                 PopupMenuItem(
                   value: 'toggleButtons',
                   child: ToggleButtons(

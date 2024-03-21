@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../models/pokemon.dart';
@@ -11,6 +13,7 @@ class PokemonViewModel extends ChangeNotifier {
   bool _hasMore = true;
   String? errorMessage;
   String currentSorting = 'None';
+
   bool get hasMore => _hasMore;
 
   PokemonViewModel() {
@@ -19,9 +22,9 @@ class PokemonViewModel extends ChangeNotifier {
 
   Future<void> fetchPokemons() async {
     try {
-      List<Pokemon> newPokemons = await _pokemonService.fetchPokemons(_page, _limit);
+      List<Pokemon> newPokemons =
+          await _pokemonService.fetchPokemons(_page, _limit);
       pokemons.addAll(newPokemons);
-
 
       if (currentSorting == 'Name') {
         sortByName();
