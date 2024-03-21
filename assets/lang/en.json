@@ -1,0 +1,20 @@
+{
+  "title": "Pokemon",
+  "users": "Users",
+  "sortByName": "Sort by Name",
+  "sortByExperience": "Sort by Base Experience",
+  "noMoreUsers": "No more users",
+  "nickname": "Nickname",
+  "company": "Company",
+  "email": "Email",
+  "location": "Location",
+  "web": "Web",
+  "viewSpeciesInformation": "View Species Information",
+  "shape": "Shape",
+  "color": "Color",
+  "abilities": "Abilities",
+  "types": "Types",
+  "moves": "Moves",
+  "showMore": "Show More",
+  "close": "Close"
+}

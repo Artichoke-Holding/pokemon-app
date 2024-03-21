@@ -8,7 +8,8 @@ import '../services/user_service.dart';
 import '../viewmodels/pokemon_view_models.dart';
 import '../viewmodels/user_view_model.dart';
 
-final pokemonViewModelProvider = ChangeNotifierProvider<PokemonViewModel>((ref) {
+final pokemonViewModelProvider =
+    ChangeNotifierProvider<PokemonViewModel>((ref) {
   return PokemonViewModel();
 });
 
@@ -21,9 +22,14 @@ final audioServiceProvider = Provider<AudioService>((ref) {
   return AudioServiceImpl();
 });
 
-final pokemonByIdProvider = FutureProvider.family<Pokemon, int>((ref, id) async {
+final pokemonByIdProvider =
+    FutureProvider.family<Pokemon, int>((ref, id) async {
   final pokemonService = ref.watch(pokemonServiceProvider);
   return await pokemonService.fetchPokemonById(id);
 });
 
-final usersViewModelProvider = ChangeNotifierProvider((ref) => UsersViewModel(UserService()));
+final usersViewModelProvider =
+    ChangeNotifierProvider((ref) => UsersViewModel(UserService()));
+final languageProvider = StateProvider<String>((ref) {
+  return 'en';
+});

@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pokemon/utils/string_utils.dart'; // Assuming this exists for capitalize function
 import '../models/pokemon.dart';
@@ -71,7 +72,7 @@ class _PokemonDetailsPageState extends ConsumerState<PokemonDetailsPage> {
             padding: EdgeInsets.zero,
             minimumSize: Size(double.infinity, 48),
           ),
-          child: Text('View Species Information'),
+          child: Text(FlutterI18n.translate(context, "viewSpeciesInformation")),
         ),
       ),
     );
@@ -103,7 +104,7 @@ class _PokemonDetailsPageState extends ConsumerState<PokemonDetailsPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Shape: ${species.shape.toUpperCase()}',
+                '${FlutterI18n.translate(context, "shape")}: ${species.shape.toUpperCase()}',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 18,
@@ -112,7 +113,7 @@ class _PokemonDetailsPageState extends ConsumerState<PokemonDetailsPage> {
               ),
               SizedBox(height: 10),
               Text(
-                'Color: ${species.color.toUpperCase()}',
+                '${FlutterI18n.translate(context, "color")} ${species.color.toUpperCase()}',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 18,
@@ -126,7 +127,7 @@ class _PokemonDetailsPageState extends ConsumerState<PokemonDetailsPage> {
         actions: [
           ElevatedButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Close', style: TextStyle(fontSize: 16)),
+            child: Text(FlutterI18n.translate(context, "close"), style: TextStyle(fontSize: 16)),
             style: ElevatedButton.styleFrom(
               foregroundColor: backgroundColor, backgroundColor: Colors.white.withOpacity(0.9), // Text color
             ),
@@ -177,14 +178,14 @@ class _PokemonDetailsPageState extends ConsumerState<PokemonDetailsPage> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: PokemonDetailSection(
-                  title: 'Abilities',
+                  title: FlutterI18n.translate(context, "abilities"),
                   items: pokemon.abilities,
                 ),
               ),
               Align(
                 alignment: Alignment.centerLeft,
                 child: PokemonDetailSection(
-                  title: 'Types',
+                  title: FlutterI18n.translate(context, "types"),
                   items: pokemon.types,
                   itemBuilder: (type) => TypeChip(type: type),
                 ),
@@ -192,8 +193,9 @@ class _PokemonDetailsPageState extends ConsumerState<PokemonDetailsPage> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: PokemonDetailSection(
-                  title: 'Moves',
-                  items: movesToShow,
+                  title: FlutterI18n.translate(context, "moves"),
+
+                items: movesToShow,
                 ),
               ),
               if (pokemon.moves.length > _visibleMovesCount)
@@ -218,7 +220,7 @@ class _PokemonDetailsPageState extends ConsumerState<PokemonDetailsPage> {
                         padding:
                             EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                       ),
-                      child: Text('Show More'),
+                      child: Text(FlutterI18n.translate(context, "showMore")),
                     ),
                   ),
                 ),

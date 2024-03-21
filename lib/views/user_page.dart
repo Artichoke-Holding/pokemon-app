@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -34,7 +35,7 @@ class _UserPageState extends ConsumerState<UserPage> {
     final viewModel = ref.watch(usersViewModelProvider);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Users'),
+        title:  Text(FlutterI18n.translate(context, "users"),),
         surfaceTintColor: Colors.white,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),

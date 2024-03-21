@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/user.dart'; // Adjust the path to your User model
 
@@ -41,17 +42,14 @@ class UserListItem extends StatelessWidget {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 24),
-                  _buildDetailRow(
-                    'Nickname',
-                    '${user.name?.first ?? 'N/A'} ${user.name?.last ?? 'N/A'}',
-                  ),
+                  _buildDetailRow("nickname", '${user.name?.first ?? 'N/A'} ${user.name?.last ?? 'N/A'}', context),
+
                   VerticalDivider(color: Colors.grey, thickness: 1),
 
-                  _buildDetailRow('Company', user.job?.company ?? 'N/A'),
-                  _buildDetailRow('Email', user.firstEmail ?? 'N/A'),
-                  _buildDetailRow('Location',
-                      '${user.location?.country ?? 'N/A'}, ${user.location?.city ?? 'N/A'}'),
-                  _buildDetailRow('Web', user.website ?? 'N/A'),
+                  _buildDetailRow("company", user.job?.company ?? 'N/A', context),
+                  _buildDetailRow("email", user.firstEmail ?? 'N/A', context),
+                  _buildDetailRow("location", '${user.location?.country ?? 'N/A'}, ${user.location?.city ?? 'N/A'}', context),
+                  _buildDetailRow("web", user.website ?? 'N/A', context),
                   // Add more rows as needed
                 ],
               ),
@@ -62,7 +60,7 @@ class UserListItem extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
+  Widget _buildDetailRow(String labelKey, String value, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
@@ -71,7 +69,7 @@ class UserListItem extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Text(
-              label,
+              FlutterI18n.translate(context, labelKey),
               style: TextStyle(color: Colors.grey),
             ),
           ),
