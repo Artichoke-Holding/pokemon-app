@@ -22,7 +22,7 @@ class AppRouter {
             },
           ),
           GoRoute(
-            path: 'users', // New route for UserPage
+            path: 'users',
             builder: (context, state) => const UserPage(),
           ),
         ],

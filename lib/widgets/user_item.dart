@@ -45,6 +45,8 @@ class UserListItem extends StatelessWidget {
                     'Nickname',
                     '${user.name?.first ?? 'N/A'} ${user.name?.last ?? 'N/A'}',
                   ),
+                  VerticalDivider(color: Colors.grey, thickness: 1),
+
                   _buildDetailRow('Company', user.job?.company ?? 'N/A'),
                   _buildDetailRow('Email', user.firstEmail ?? 'N/A'),
                   _buildDetailRow('Location',
@@ -64,21 +66,18 @@ class UserListItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             flex: 2,
             child: Text(
               label,
-              style: TextStyle(color: Colors.grey[700]),
+              style: TextStyle(color: Colors.grey),
             ),
           ),
           Expanded(
             flex: 3,
-            child: Text(
-              value,
-              style: TextStyle(color: Colors.grey[500]),
-            ),
+            child: Text(value),
           ),
         ],
       ),

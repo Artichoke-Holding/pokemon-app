@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../models/user.dart';
 import '../providers/providers.dart';
@@ -35,6 +36,10 @@ class _UserPageState extends ConsumerState<UserPage> {
       appBar: AppBar(
         title: const Text('Users'),
         surfaceTintColor: Colors.white,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => context.pop(),
+        ),
       ),
       body: Skeletonizer(
         enabled: viewModel.isLoading && viewModel.users.isEmpty,
