@@ -1,8 +1,7 @@
-import 'dart:async';
 import 'audio_service.dart';
 import 'package:just_audio/just_audio.dart';
 
-class AudioServiceWeb extends AudioService {
+class AudioServiceDefault extends AudioService {
   final AudioPlayer _audioPlayer = AudioPlayer();
 
   @override
@@ -11,7 +10,6 @@ class AudioServiceWeb extends AudioService {
       await _audioPlayer.setUrl(url);
       await _audioPlayer.play();
     } catch (e) {
-      print("Could not play sound: $e");
     }
   }
 
@@ -20,7 +18,6 @@ class AudioServiceWeb extends AudioService {
     try {
       await _audioPlayer.stop();
     } catch (e) {
-      print("Could not stop sound: $e");
     }
   }
 

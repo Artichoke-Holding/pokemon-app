@@ -10,7 +10,7 @@ void main() {
   runApp(ProviderScope(child: MyInfoGameApp()));
 }
 
-class MyInfoGameApp extends ConsumerWidget { // Updated to ConsumerWidget
+class MyInfoGameApp extends ConsumerWidget {
   MyInfoGameApp({Key? key}) : super(key: key);
 
   @override

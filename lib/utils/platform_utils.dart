@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart' show kIsWeb; // Import kIsWeb
-import 'dart:io' show Platform; // Import Platform
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:io' show Platform;
 
 class PlatformUtils {
   static bool isWeb() {

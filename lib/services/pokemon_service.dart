@@ -1,24 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../exceptions/data_format_exception.dart';
+import '../exceptions/network_exception.dart';
 import '../models/pokemon.dart';
 import '../core/consts.dart';
 import '../models/species_information.dart';
 
-class NetworkException implements Exception {
-  final String message;
-  NetworkException(this.message);
-
-  @override
-  String toString() => 'NetworkException: $message';
-}
-
-class DataFormatException implements Exception {
-  final String message;
-  DataFormatException(this.message);
-
-  @override
-  String toString() => 'DataFormatException: $message';
-}
 
 class PokemonService {
   Future<List<Pokemon>> fetchPokemons(int page, int limit) async {
@@ -50,7 +37,6 @@ class PokemonService {
         throw DataFormatException('Invalid JSON format for Pokémon list');
       }
     } on Exception catch (e) {
-      // Handle any other type of unexpected error
       throw NetworkException('An error occurred: $e');
     }
   }
