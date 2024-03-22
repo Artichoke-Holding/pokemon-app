@@ -16,5 +16,7 @@
   "types": "Typen",
   "moves": "Bewegungen",
   "showMore": "Mehr anzeigen",
-  "close": "Schließen"
+  "close": "Schließen",
+  "errorLoadingPokemon": "Fehler beim Laden der Pokémon-Details.",
+  "errorFetchingSpeciesInfo": "Fehler beim Abrufen der Arteninformationen."
 }

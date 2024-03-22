@@ -60,7 +60,7 @@ class _UserPageState extends ConsumerState<UserPage> {
       itemCount: itemCount,
       itemBuilder: (context, index) {
         if (viewModel.isLoading && viewModel.users.isEmpty) {
-          return _buildUserSkeletonItem(); // Show skeleton item
+          return _buildUserSkeletonItem();
         } else if (index >= viewModel.users.length) {
           // Handle load more case
           return viewModel.hasMore && viewModel.users.isNotEmpty

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../models/user.dart'; // Adjust the path to your User model
+import '../models/user.dart';
 
 class UserListItem extends StatelessWidget {
   final User user;

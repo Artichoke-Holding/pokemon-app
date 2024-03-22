@@ -4,63 +4,87 @@ import '../models/pokemon.dart';
 import '../core/consts.dart';
 import '../models/species_information.dart';
 
+class NetworkException implements Exception {
+  final String message;
+  NetworkException(this.message);
+
+  @override
+  String toString() => 'NetworkException: $message';
+}
+
+class DataFormatException implements Exception {
+  final String message;
+  DataFormatException(this.message);
+
+  @override
+  String toString() => 'DataFormatException: $message';
+}
 
 class PokemonService {
   Future<List<Pokemon>> fetchPokemons(int page, int limit) async {
-    var url = Uri.parse('${AppAPIs.pokemonList}?limit=$limit&offset=${page * limit}');
-    var response = await http.get(url);
+    try {
+      var url = Uri.parse('${AppAPIs.pokemonList}?limit=$limit&offset=${page * limit}');
+      var response = await http.get(url);
 
-    if (response.statusCode == 200) {
+      if (response.statusCode != 200) {
+        throw NetworkException('Failed to load Pokémon list');
+      }
+
       var jsonResponse = jsonDecode(response.body);
       if (jsonResponse is Map<String, dynamic> && jsonResponse['results'] is List) {
         List<dynamic> pokemonsJson = jsonResponse['results'] as List<dynamic>;
-        List<Pokemon> pokemons = await Future.wait(pokemonsJson.map((jsonItem) async {
+        return await Future.wait(pokemonsJson.map((jsonItem) async {
           if (jsonItem is Map<String, dynamic>) {
-            var detailUrl = jsonItem['url'] as String; // Cast to String
+            var detailUrl = jsonItem['url'] as String;
             var detailResponse = await http.get(Uri.parse(detailUrl));
-            if (detailResponse.statusCode == 200) {
-              var detailJson = jsonDecode(detailResponse.body) as Map<String, dynamic>;
-              return Pokemon.fromJson(detailJson);
-            } else {
-              throw Exception('Failed to load Pokémon details');
+            if (detailResponse.statusCode != 200) {
+              throw NetworkException('Failed to load Pokémon details');
             }
+
+            return Pokemon.fromJson(jsonDecode(detailResponse.body) as Map<String, dynamic>);
           } else {
-            throw Exception('Invalid JSON data');
+            throw DataFormatException('Invalid JSON data for Pokémon details');
           }
         }).toList());
-
-        return pokemons;
       } else {
-        throw Exception('Invalid JSON format');
+        throw DataFormatException('Invalid JSON format for Pokémon list');
       }
-    } else {
-      throw Exception('Failed to load Pokémon list');
+    } on Exception catch (e) {
+      // Handle any other type of unexpected error
+      throw NetworkException('An error occurred: $e');
     }
   }
 
-
   Future<Pokemon> fetchPokemonById(int id) async {
-    var url = Uri.parse(AppAPIs.pokemonList + id.toString());
-    var response = await http.get(url);
+    try {
+      var url = Uri.parse(AppAPIs.pokemonList + id.toString());
+      var response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      var detailJson = jsonDecode(response.body) as Map<String, dynamic>;
-      return Pokemon.fromJson(detailJson);
-    } else {
-      throw Exception('Failed to load Pokémon details for ID: $id');
+      if (response.statusCode != 200) {
+        throw NetworkException('Failed to load Pokémon details for ID: $id');
+      }
+
+      return Pokemon.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+    } on FormatException {
+      throw DataFormatException('Invalid JSON format for Pokémon details');
+    } on Exception {
+      throw NetworkException('Network error occurred while fetching Pokémon by ID');
     }
   }
 
   Future<SpeciesInformation> fetchSpeciesInformation(int pokemonId) async {
-    final response = await http.get(Uri.parse(AppAPIs.pokemonSpecies + '$pokemonId'));
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body) as Map<String, dynamic>;
-      return SpeciesInformation.fromJson(data);
-    } else {
-      throw Exception('Failed to load species information');
+    try {
+      final response = await http.get(Uri.parse(AppAPIs.pokemonSpecies + '$pokemonId'));
+
+      if (response.statusCode != 200) {
+        throw NetworkException('Failed to load species information for Pokémon ID: $pokemonId');
+      }
+
+      return SpeciesInformation.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+    } on FormatException {
+      throw DataFormatException('Invalid JSON format for species information');
+    } on Exception {
+      throw NetworkException('Network error occurred while fetching species information');
     }
   }
-
-
 }
-

@@ -25,7 +25,7 @@ class MyInfoGameApp extends ConsumerWidget { // Updated to ConsumerWidget
         FlutterI18nDelegate(
           translationLoader: FileTranslationLoader(
             basePath: 'assets/lang',
-            forcedLocale: Locale(currentLang), // Dynamically set the locale
+            forcedLocale: Locale(currentLang),
           ),
         ),
         GlobalMaterialLocalizations.delegate,

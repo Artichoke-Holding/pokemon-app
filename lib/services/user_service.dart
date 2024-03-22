@@ -10,7 +10,7 @@ class UserService {
         .map((e) => User.fromJson(e as Map<String, dynamic>))
         .toList();
 
-    // Fix for endIndex exceeding list length
+
     int startIndex = page * pageSize;
     int endIndex = startIndex + pageSize;
     endIndex = endIndex > users.length ? users.length : endIndex;

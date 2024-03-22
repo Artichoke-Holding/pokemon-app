@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pokemon/utils/string_utils.dart'; // Assuming this exists for capitalize function
+import 'package:pokemon/utils/string_utils.dart';
 import '../models/pokemon.dart';
 import '../models/species_information.dart';
 import '../providers/providers.dart';
@@ -35,30 +35,18 @@ class _PokemonDetailsPageState extends ConsumerState<PokemonDetailsPage> {
         child: pokemonFuture.when(
           data: (pokemon) => buildPokemonDetails(context, pokemon),
           loading: () => buildSkeletonScreen(context),
-          error: (error, _) => Text('Error: $error'),
+          error: (error, _) => Center(child: Text(FlutterI18n.translate(context, "errorLoadingPokemon"))),
         ),
       ),
       bottomNavigationBar: BottomAppBar(
         child: ElevatedButton(
           onPressed: () async {
             try {
-              final speciesInfo = await pokemonService
-                  .fetchSpeciesInformation(widget.pokemonId);
+              final speciesInfo = await pokemonService.fetchSpeciesInformation(widget.pokemonId);
               showSpeciesInformationDialog(context, speciesInfo);
             } catch (e) {
-              // Proper error handling
-              await showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: Text('Error'),
-                  content: Text('Failed to fetch species information: $e'),
-                  actions: [
-                    TextButton(
-                      child: Text('OK'),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ],
-                ),
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(FlutterI18n.translate(context, "errorFetchingSpeciesInfo")))
               );
             }
           },

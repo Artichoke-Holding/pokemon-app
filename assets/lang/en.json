@@ -16,5 +16,7 @@
   "types": "Types",
   "moves": "Moves",
   "showMore": "Show More",
-  "close": "Close"
+  "close": "Close",
+  "errorLoadingPokemon": "Error loading Pokémon details.",
+  "errorFetchingSpeciesInfo": "Failed to fetch species information."
 }
