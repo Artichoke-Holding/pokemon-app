@@ -4,8 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../providers/providers.dart';
-import '../services/audio/audio_service.dart';
 import '../utils/string_utils.dart';
+import 'full_screen_gif.dart';
 
 class PokemonListView extends ConsumerWidget {
   @override
@@ -15,22 +15,37 @@ class PokemonListView extends ConsumerWidget {
     bool isLoading = viewModel.pokemons.isEmpty &&
         viewModel.hasMore &&
         viewModel.errorMessage == null;
-
+    void navigateWithTransition(int pokemonId) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => FullScreenGif(),
+      );
+      Future.delayed(Duration(milliseconds: 1500), () {
+        Navigator.of(context).pop();
+        context.go('/pokemon/$pokemonId');
+      });
+    }
 
     return Skeletonizer(
       enabled: isLoading,
       child: ListView.builder(
-        itemCount: isLoading ? 6 : viewModel.pokemons.length + (viewModel.hasMore ? 1 : 0),
+        itemCount: isLoading
+            ? 6
+            : viewModel.pokemons.length + (viewModel.hasMore ? 1 : 0),
         itemBuilder: (context, index) {
           if (isLoading) {
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: Card(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
                 child: ListTile(
                   leading: Container(width: 50, height: 50, color: Colors.grey),
-                  title: Container(width: double.infinity, height: 10, color: Colors.grey),
-                  subtitle: Container(width: 100, height: 10, color: Colors.grey),
+                  title: Container(
+                      width: double.infinity, height: 10, color: Colors.grey),
+                  subtitle:
+                      Container(width: 100, height: 10, color: Colors.grey),
                 ),
               ),
             );
@@ -51,7 +66,8 @@ class PokemonListView extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(10)),
               child: ListTile(
                 onTap: () {
-                  context.go('/pokemon/${pokemon.id}');
+                  navigateWithTransition(pokemon.id ?? 0);
+                  // context.go('/pokemon/${pokemon.id}');
                 },
                 leading:
                     Image.network(pokemon.imageUrl ?? '', fit: BoxFit.cover),
@@ -76,8 +92,7 @@ class PokemonListView extends ConsumerWidget {
                               Container(
                                 height: 20,
                                 width: 1,
-                                color:
-                                    Colors.white,
+                                color: Colors.white,
                               ),
                               SizedBox(width: 10),
                               Text(
@@ -89,15 +104,16 @@ class PokemonListView extends ConsumerWidget {
                     ),
                   ],
                 ),
-                trailing:IconButton(
+                trailing: IconButton(
                   icon: SvgPicture.asset(
                     'assets/images/icons/volume_up_simple_electrifying.svg',
                     height: 35,
                     color: Colors.blue,
                   ),
-                  onPressed: () => ref.read(audioServiceProvider).playCry(pokemon.cryUrl ?? ''),
+                  onPressed: () => ref
+                      .read(audioServiceProvider)
+                      .playCry(pokemon.cryUrl ?? ''),
                 ),
-
               ),
             ),
           );
